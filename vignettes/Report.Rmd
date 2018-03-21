@@ -1,0 +1,96 @@
+---
+title: "NOAAWeather"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+fontsize: 16pt
+vignette: >
+  %\VignetteIndexEntry{NOAAWeather}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Problem Description
+  
+ We are addressing a problem faced by climate change enthusiasts, hobbyists, and data science enthusiast who need weather information as part of their product, work, research and analysis. Our users need access to weather data from several distant weather stations to identify patterns, monitor trends, and analyze changes over time but it is a daunting task for them to collect, clean and present the data. Moreover, doing so is an extra work for them.
+  
+  Our package address this problem by letting them pull the cleaned data from 235 NOAA weather stations across the U.S. We provide 2 options:
+  
+  1. Plotted Data - users who want to visualize trends, variation and climate patterns can do so by executing 1 command only. We studied 100+ plots, found 4 to be particularly useful, and built them in our package.
+  
+      * Time Series
+      * Box Plot
+      * Calendar Heat Map
+      * Geospatial Map
+  
+  
+  2. Raw Data - users who want to do deeper analysis can access the raw data and process data as per their preference. 
+  
+  Value of our package is in abstracting the details from users. We allow users to focus on their primary work and not worry about connecting to 235 stations, accessing, cleaning, tidying and visualizing the data.
+  
+## Use-cases
+  
+  We have exposed 7 functions in package. We are providing 3 use-cases in this vignette. Please refer to manuals for details on functions and their usage:
+  
+  *	`getAllLocations() `
+  * `getMetrics() `
+  *	`getWeatherData()` 
+  *	`plot_tseries()`
+  *	`plot_boxplot()`
+  *	`plot_calhmap()`
+  *	`plot_spatial()`
+  
+
+####  Use-case 1
+  
+```{r, include = FALSE}
+# load NOAAWeather package
+library(NOAAWeather)
+```
+_Executing the following statement will get the weather data for 1st-2nd Jan, 2018 for all metrics for Weather Stations within 100 miles of Austin, TX. Online = TRUE will get the realtime data from NOAA APIs rather than offline database that is attached to the package._
+
+```{r}
+# print only the first 20 rows of the response:
+knitr::kable(
+  head(getWeatherData(online = TRUE, location = "Austin", state="TX", from = "2018-01-01", to = "2018-01-02", range = 100),20))
+```
+
+####  Use-case 2
+
+_Executing the following statement will plot a calendar heat map of maximum temperature (t_max) for Wolf Point, MT. Data will be pulled using NOAA APIs from = "2017-01-01", to = "2017-01-31" and actual values will be printed on the cells. We recommend text=FALSE when plotting for a larger duration to avoid text overlap._
+```{r,fig.width = 9,fig.height = 8}
+
+plot_calhmap(online = TRUE, from = "2017-01-01", to = "2017-01-31", 
+             measure = "t_max", location = "Wolf Point", state = "MT",
+             text = TRUE)
+
+```
+
+####  Use-case 3
+
+_Executing the following statement will generate a geospatial plot showing the value of maximum temperature (t_max) on 2018-01-10 for each weather station on the U.S. map. The values are color coded in a gradient fashion from blue (low temp) to red (high temp)_
+
+```{r,fig.width = 9,fig.height = 8}
+
+plot_spatial(online=FALSE, Date="2017-01-10", measure="t_max")
+
+```
+
+## Team Contributions
+
+* Sagar Ganapaneni <123saga@gmail.com>
+* Vikramjeet Singh <vikram.dceian@gmail.com>
+
+## Additional details
+
+- Supports offline testing: we have cached a 6-month database (2017-01-01 - 2017-06-30) for all metrics and all weather stations.
+
+- We have successfully passed the test for the following platforms:
+
+    * macOS 10.11 El Capitan, R-release (experimental)
+    * Windows Server 2008 R2 SP1, R-release, 32/64 bit
+    * Ubuntu Linux 16.04 LTS, R-release, GCC
+    * Debian Linux, R-devel, GCC ASAN/UBSAN
+    * Debian Linux, R-devel, GCC
+    * Debian Linux, R-release, GCC
+    * Debian Linux, R-patched, GCC
+    * Debian Linux, R-release, GCC
